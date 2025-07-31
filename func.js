@@ -22,8 +22,13 @@ function createProgressWidget(containerSelector) {
     };
     return {
         setValue(val) {
-            const clamped = Math.max(0, Math.min(100, val));
-            const offset = 100 - clamped;
+            let numValue = Number(val);
+            if (isNaN(numValue)) {
+                numValue = 0;
+            }
+            const totalPathLength = 100.2;
+            const clamped = Math.max(0, Math.min(100, numValue));
+            const offset = totalPathLength - (clamped * (totalPathLength / 100));
             progressPath.style.strokeDashoffset = offset;
         },
         setAnimated(on) {
@@ -42,7 +47,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const hideToggle = document.getElementById("hide");
 
     valueInput.addEventListener("input", (e) => {
-        myProgressWidget.setValue(Number(e.target.value));
+        const input = e.target;
+        if (Number(input.value) > 100) {
+            input.value = 100;
+        }
+        myProgressWidget.setValue(input.value);
+    });
+
+    valueInput.addEventListener("blur", (e) => {
+        const input = e.target;
+        let value = Number(input.value);
+        if (isNaN(value) || value < 0) {
+            value = 0;
+        } else if (value > 100) {
+            value = 100;
+        }
+        input.value = value;
+        myProgressWidget.setValue(value);
     });
 
     animateToggle.addEventListener("change", (e) => {
