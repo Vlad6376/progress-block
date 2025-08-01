@@ -48,10 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     valueInput.addEventListener("input", (e) => {
         const input = e.target;
-        if (Number(input.value) > 100) {
-            input.value = 100;
+        let value = input.value.replace(/[^0-9]/g, '');
+
+        if (Number(value) > 100) {
+            value = '100';
         }
-        myProgressWidget.setValue(input.value);
+        input.value = value;
+        myProgressWidget.setValue(value);
     });
 
     valueInput.addEventListener("blur", (e) => {
